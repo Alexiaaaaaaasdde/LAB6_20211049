@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_vehiculos"
+        android:icon="@android:drawable/ic_menu_manage"
+        android:title="Mis Vehículos" />
+    <item
+        android:id="@+id/nav_registros"
+        android:icon="@android:drawable/ic_menu_agenda"
+        android:title="Registros" />
+    <item
+        android:id="@+id/nav_resumen"
+        android:icon="@android:drawable/ic_menu_sort_by_size"
+        android:title="Resumen" />
+    <item
+        android:id="@+id/nav_logout"
+        android:icon="@android:drawable/ic_lock_power_off"
+        android:title="Cerrar Sesión" />
+</menu>

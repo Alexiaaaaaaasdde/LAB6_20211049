@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "693560700179",
+    "project_id": "fuelmonitorapp-4c357",
+    "storage_bucket": "fuelmonitorapp-4c357.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:693560700179:android:8263e91a3a0d1caf7a3ee6",
+        "android_client_info": {
+          "package_name": "com.example.fuelmonitorapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZxl8kKPN8F135Vo0uLJ-lRAmhVBZe2-s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
