@@ -10,13 +10,18 @@ import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract;
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
 
     private EditText etEmail, etPassword;
     private Button btnLogin, btnRegister, btnGoogle;
     private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
 
     private final ActivityResultLauncher<Intent> signInLauncher =
             registerForActivityResult(new FirebaseAuthUIActivityResultContract(), this::onSignInResult);
@@ -33,9 +38,12 @@ public class LoginActivity extends AppCompatActivity {
         btnGoogle = findViewById(R.id.btnGoogle);
 
         mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
 
         btnLogin.setOnClickListener(v -> loginEmail());
-        btnRegister.setOnClickListener(v -> registerEmail());
+        btnRegister.setOnClickListener(v ->
+                startActivity(new Intent(this, RegisterActivity.class)));
+
         btnGoogle.setOnClickListener(v -> loginGoogle());
     }
 
@@ -43,32 +51,51 @@ public class LoginActivity extends AppCompatActivity {
         String email = etEmail.getText().toString().trim();
         String pass = etPassword.getText().toString().trim();
 
+        if (email.isEmpty() || pass.isEmpty()) {
+            Toast.makeText(this, "Completa todos los campos", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         mAuth.signInWithEmailAndPassword(email, pass)
                 .addOnSuccessListener(authResult -> openMain())
                 .addOnFailureListener(e ->
                         Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
-    private void registerEmail() {
+    private void registerUser() {
         String email = etEmail.getText().toString().trim();
-        String pass = etPassword.getText().toString().trim();
+        String password = etPassword.getText().toString().trim();
 
-        if (email.isEmpty() || pass.isEmpty()) {
+        if (email.isEmpty() || password.isEmpty()) {
             Toast.makeText(this, "Completa todos los campos", Toast.LENGTH_SHORT).show();
             return;
         }
-        if (pass.length() < 6) {
+        if (password.length() < 6) {
             Toast.makeText(this, "La contraseña debe tener al menos 6 caracteres", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        mAuth.createUserWithEmailAndPassword(email, pass)
-                .addOnSuccessListener(authResult -> {
-                    Toast.makeText(this, "Usuario registrado correctamente", Toast.LENGTH_SHORT).show();
-                    openMain();
-                })
-                .addOnFailureListener(e ->
-                        Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+        mAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        String uid = mAuth.getCurrentUser().getUid();
+
+                        Map<String, Object> user = new HashMap<>();
+                        user.put("email", email);
+                        user.put("createdAt", FieldValue.serverTimestamp());
+
+                        db.collection("users").document(uid)
+                                .set(user)
+                                .addOnSuccessListener(aVoid -> {
+                                    Toast.makeText(this, "Usuario registrado correctamente", Toast.LENGTH_SHORT).show();
+                                    openMain();
+                                })
+                                .addOnFailureListener(e ->
+                                        Toast.makeText(this, "Error al guardar datos: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                    } else {
+                        Toast.makeText(this, "Error: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     private void loginGoogle() {

@@ -2,14 +2,13 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF">
+    android:padding="24dp">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout
         android:orientation="vertical"
-        android:padding="24dp"
         android:gravity="center"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <ImageView
             android:src="@mipmap/ic_launcher_round"
@@ -18,12 +17,26 @@
             android:layout_marginBottom="24dp" />
 
         <EditText
+            android:id="@+id/etNombre"
+            android:hint="Nombre"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp" />
+
+        <EditText
+            android:id="@+id/etApellido"
+            android:hint="Apellido"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp" />
+
+        <EditText
             android:id="@+id/etEmail"
             android:hint="Correo electrónico"
             android:inputType="textEmailAddress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp" />
+            android:layout_marginBottom="8dp" />
 
         <EditText
             android:id="@+id/etPassword"
@@ -31,28 +44,21 @@
             android:inputType="textPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp" />
+            android:layout_marginBottom="16dp" />
 
         <Button
-            android:id="@+id/btnLogin"
-            android:text="Iniciar sesión"
+            android:id="@+id/btnRegistrar"
+            android:text="Registrarse"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <Button
-            android:id="@+id/btnRegister"
-            android:text="Registrarse"
+        <TextView
+            android:id="@+id/tvVolverLogin"
+            android:text="¿Ya tienes cuenta? Inicia sesión"
+            android:textColor="#6200EE"
+            android:layout_marginTop="12dp"
+            android:gravity="center"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp" />
-
-        <Button
-            android:id="@+id/btnGoogle"
-            android:text="Iniciar con Google"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp" />
-
+            android:layout_height="wrap_content" />
     </LinearLayout>
-
 </ScrollView>

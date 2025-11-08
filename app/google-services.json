@@ -12,7 +12,20 @@
           "package_name": "com.example.fuelmonitorapp"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "693560700179-j90tj9vqurl1ftgpsdhhmompsps3pbeh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.fuelmonitorapp",
+            "certificate_hash": "9c6d04557fa55ad2f1cbf64ff3f63e27acb2a081"
+          }
+        },
+        {
+          "client_id": "693560700179-4280mv2t3u2eqvpfcf288snubh6k92le.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBZxl8kKPN8F135Vo0uLJ-lRAmhVBZe2-s"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "693560700179-4280mv2t3u2eqvpfcf288snubh6k92le.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

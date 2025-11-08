@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">FuelMonitorApp</string>
-    <!-- TODO: Remove or change this placeholder text -->
+
+    <string name="default_web_client_id">693560700179-4280mv2t3u2eqvpfcf288snubh6k92le.apps.googleusercontent.com</string>
+
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

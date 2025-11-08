@@ -11,9 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.FuelMonitorApp">
-        <activity
-            android:name=".fragments.CerrarSesionFragment"
-            android:exported="false" />
+
         <activity
             android:name=".fragments.ResumenFragment"
             android:exported="false" />
@@ -31,7 +29,9 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity> <!-- MainActivity será la pantalla posterior -->
+        </activity>
+        <activity android:name=".RegisterActivity" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true" />
