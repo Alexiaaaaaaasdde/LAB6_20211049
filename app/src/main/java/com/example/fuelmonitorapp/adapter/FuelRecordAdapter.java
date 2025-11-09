@@ -37,14 +37,26 @@ public class FuelRecordAdapter extends RecyclerView.Adapter<FuelRecordAdapter.Vi
         FuelRecord record = lista.get(position);
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-        holder.tvFecha.setText("Fecha: " + sdf.format(record.getFecha().toDate()));
+
+        // 🔹 Corregido para evitar crash si la fecha no es Timestamp
+        Object fechaObj = record.getFecha();
+        String fechaTexto;
+
+        if (fechaObj instanceof com.google.firebase.Timestamp) {
+            fechaTexto = sdf.format(((com.google.firebase.Timestamp) fechaObj).toDate());
+        } else if (fechaObj instanceof String) {
+            fechaTexto = (String) fechaObj;
+        } else {
+            fechaTexto = "Sin fecha";
+        }
+
+        holder.tvFecha.setText("Fecha: " + fechaTexto);
         holder.tvVehiculo.setText("Vehículo: " + record.getVehicleId());
         holder.tvKm.setText("Km: " + record.getKilometraje());
         holder.tvLitros.setText("Litros: " + record.getLitros());
         holder.tvPrecio.setText("Precio: S/ " + record.getPrecioTotal());
         holder.tvTipo.setText("Combustible: " + record.getTipoCombustible());
 
-        // Eliminar registro
         holder.btnEliminar.setOnClickListener(v -> {
             new AlertDialog.Builder(context)
                     .setTitle("Eliminar registro")
