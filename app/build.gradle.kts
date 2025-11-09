@@ -48,4 +48,9 @@ dependencies {
     implementation("com.firebaseui:firebase-ui-auth:8.0.2")
 
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
+
+    // QR
+    implementation("com.google.zxing:core:3.5.1")
+    implementation("com.journeyapps:zxing-android-embedded:4.3.0")
+
 }

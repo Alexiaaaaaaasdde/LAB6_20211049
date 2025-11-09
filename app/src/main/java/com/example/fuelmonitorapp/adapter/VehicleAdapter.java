@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.fuelmonitorapp.R;
 import com.example.fuelmonitorapp.entity.Vehicle;
-import com.google.firebase.Timestamp;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -22,6 +21,7 @@ public class VehicleAdapter extends RecyclerView.Adapter<VehicleAdapter.ViewHold
     public interface OnVehicleActionListener {
         void onEdit(Vehicle v);
         void onDelete(Vehicle v);
+        void onShowQR(Vehicle v);
     }
 
     private List<Vehicle> vehicles;
@@ -43,15 +43,21 @@ public class VehicleAdapter extends RecyclerView.Adapter<VehicleAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Vehicle v = vehicles.get(position);
+
         holder.tvPlaca.setText(v.getPlaca());
         holder.tvModelo.setText(v.getMarca() + " " + v.getModelo() + " (" + v.getAnio() + ")");
+
         if (v.getRevision() != null) {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
             holder.tvRevision.setText("Última revisión: " + sdf.format(v.getRevision().toDate()));
+        } else {
+            holder.tvRevision.setText("Sin revisión registrada");
         }
 
         holder.btnEditar.setOnClickListener(view -> listener.onEdit(v));
         holder.btnEliminar.setOnClickListener(view -> listener.onDelete(v));
+
+        holder.itemView.setOnClickListener(view -> listener.onShowQR(v));
     }
 
     @Override
@@ -62,6 +68,7 @@ public class VehicleAdapter extends RecyclerView.Adapter<VehicleAdapter.ViewHold
     static class ViewHolder extends RecyclerView.ViewHolder {
         TextView tvPlaca, tvModelo, tvRevision;
         Button btnEditar, btnEliminar;
+
         ViewHolder(View itemView) {
             super(itemView);
             tvPlaca = itemView.findViewById(R.id.tvPlaca);

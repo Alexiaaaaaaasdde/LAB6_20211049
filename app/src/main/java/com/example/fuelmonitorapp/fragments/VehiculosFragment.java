@@ -2,14 +2,11 @@ package com.example.fuelmonitorapp.fragments;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Toast;
-
+import android.view.*;
+import android.widget.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -21,15 +18,18 @@ import com.example.fuelmonitorapp.adapter.VehicleAdapter;
 import com.example.fuelmonitorapp.entity.Vehicle;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.Writer;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
+
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.ColorDrawable;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 public class VehiculosFragment extends Fragment {
 
@@ -62,6 +62,11 @@ public class VehiculosFragment extends Fragment {
             @Override
             public void onDelete(Vehicle v) {
                 eliminarVehiculo(v);
+            }
+
+            @Override
+            public void onShowQR(Vehicle v) {
+                mostrarDialogoQR(v);
             }
         });
 
@@ -107,7 +112,6 @@ public class VehiculosFragment extends Fragment {
 
         final Timestamp[] fechaRevision = {null};
 
-        // Abrir el selector de fecha
         etRevision.setOnClickListener(v1 -> {
             Calendar calendar = Calendar.getInstance();
             DatePickerDialog datePicker = new DatePickerDialog(
@@ -184,7 +188,6 @@ public class VehiculosFragment extends Fragment {
         dialog.show();
     }
 
-
     private void eliminarVehiculo(Vehicle v) {
         db.collection("vehicles")
                 .whereEqualTo("id", v.getId())
@@ -198,4 +201,78 @@ public class VehiculosFragment extends Fragment {
                     cargarVehiculos();
                 });
     }
+
+    private void mostrarDialogoQR(Vehicle vehicle) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        View qrView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_qr, null);
+        builder.setView(qrView);
+        AlertDialog dialog = builder.create();
+
+        // ✅ Configurar fondo transparente (opcional pero recomendado)
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
+
+        ImageView imgQr = qrView.findViewById(R.id.imgQr);
+        Button btnCerrar = qrView.findViewById(R.id.btnCerrar);
+
+        final String placa = vehicle.getPlaca();
+        final String idVehiculo = vehicle.getId();
+        final String fechaRevision;
+        if (vehicle.getRevision() != null) {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+            fechaRevision = sdf.format(vehicle.getRevision().toDate());
+        } else {
+            fechaRevision = "No registrada";
+        }
+
+        imgQr.setVisibility(View.GONE); // Ocultar mientras carga
+
+        db.collection("fuel_records")
+                .whereEqualTo("vehicleId", idVehiculo)
+                .orderBy("kilometraje", com.google.firebase.firestore.Query.Direction.DESCENDING)
+                .limit(1)
+                .get()
+                .addOnSuccessListener(snapshot -> {
+                    double ultimoKm = 0;
+                    if (!snapshot.isEmpty()) {
+                        Double km = snapshot.getDocuments().get(0).getDouble("kilometraje");
+                        if (km != null) ultimoKm = km;
+                    }
+
+                    String contenidoQR = "📋 Placa: " + placa +
+                            "\n📏 Último KM: " + ultimoKm +
+                            "\n🗓 Revisión: " + fechaRevision;
+
+                    try {
+                        QRCodeWriter writer = new QRCodeWriter();
+                        BitMatrix bitMatrix = writer.encode(contenidoQR, BarcodeFormat.QR_CODE, 600, 600);
+                        int width = bitMatrix.getWidth();
+                        int height = bitMatrix.getHeight();
+                        Bitmap bmp = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888); // ✅ Cambiar a ARGB_8888
+
+                        for (int x = 0; x < width; x++) {
+                            for (int y = 0; y < height; y++) {
+                                bmp.setPixel(x, y, bitMatrix.get(x, y) ? Color.BLACK : Color.WHITE);
+                            }
+                        }
+
+                        // ✅ Actualizar UI - Ya estamos en el hilo principal
+                        imgQr.setImageBitmap(bmp);
+                        imgQr.setVisibility(View.VISIBLE);
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Toast.makeText(getContext(), "Error al generar QR: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(getContext(), "Error al consultar datos: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                });
+
+        btnCerrar.setOnClickListener(v -> dialog.dismiss());
+
+        dialog.show();
+    }
+
 }

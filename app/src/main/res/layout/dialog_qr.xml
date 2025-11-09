@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="24dp"
+    android:background="@drawable/bg_dialog_qr"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/tvTituloQR"
+        android:text="Código QR - Revisión Técnica"
+        android:textColor="@color/purple_500"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginBottom="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <ImageView
+        android:id="@+id/imgQr"
+        android:layout_width="280dp"
+        android:layout_height="280dp"
+        android:layout_marginBottom="24dp"
+        android:contentDescription="Código QR"
+        android:visibility="visible" />
+
+    <Button
+        android:id="@+id/btnCerrar"
+        android:text="Cerrar"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        android:paddingVertical="10dp"
+        android:layout_width="180dp"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/purple_500"
+        android:elevation="4dp" />
+
+</LinearLayout>
